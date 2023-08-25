@@ -3,218 +3,125 @@
 (function() {
   const VARIANTES_RES = ['Камень', 'Ножницы', 'Бумага'];
 
-  // Рекурсия начало
-  const replayGenerateStr = () => {
-    let newUserstr = '';
-    let exit;
+  let exit;
+  const getNewStr = () => {
+    const userStr =
+      prompt(`${VARIANTES_RES.join(', ')}. Введите вариант ответа`);
 
-    // Получили данные от пользователя
-
-    const checkInfo = () => {
-      const userStr =
-      prompt('Камень, ножницы или бумага? Введите вариант ответа');
-
-      switch (userStr) {
-        case 0:
-          alert('Числа вводить нельзя');
-          checkInfo();
-          break;
-
-        case '':
-          alert('Строка не должна быть пустой');
-          checkInfo();
-          break;
-
-        case null:
-          exit = confirm('Хотите закончить игру?');
-          break;
+    if (userStr === null) {
+      exit = confirm(`Хотите покинуть игру?`);
+      if (exit) {
+        return;
       }
-
-      if (userStr === 'string') {
-        return userStr;
-      }
-      if (userStr === null) {
-        return userStr + '';
-      }
-
-      return userStr;
-    };
-
-    const resUserStr = checkInfo();
-
-    // Если Нулл или пустая строка присвоить другой переменной для выхода из цикла
-
-    if (resUserStr === 'null') {
-      newUserstr = resUserStr;
-      console.log('Игра окончена');
-    } else {
-      newUserstr = resUserStr;
+      return getNewStr();
     }
 
-    // Строка с большой буквы
+    if (userStr === '') {
+      alert(`${VARIANTES_RES.join(', ')}. Строка не должна быть пустой`);
+      return getNewStr();
+    }
 
-    const constructorStr = () => {
-      let newStr = '';
+    let filterStr = '';
 
-      if (newUserstr === undefined) {
-        newUserstr = true;
-        console.log('game over');
+    if (userStr.length > 0) {
+      const getRenameStr = (str) =>
+        str[0].toUpperCase() + str.slice(1).toLowerCase();
+      const renameStr = getRenameStr(userStr);
+
+      filterStr = VARIANTES_RES.filter((elem) =>
+        elem.includes(renameStr)).join();
+
+      if (filterStr === 'Камень' || filterStr === 'Ножницы' || filterStr === 'Бумага') {
+        return filterStr;
       } else {
-        newStr = newUserstr[0].toUpperCase() +
-        newUserstr.slice(1).toLocaleLowerCase();
+        alert(`${VARIANTES_RES.join(', ')}. Нет таких вариантов`);
+        getNewStr();
       }
 
-      return newStr;
-    };
-    const resNewStr = constructorStr();
-    console.log(resNewStr);
-
-    // Получили длину введенной пользователем строки
-
-    const getStrLengs = () => {
-      let strLengs = '';
-
-      if (resNewStr.length > 0) {
-        strLengs = resNewStr.length;
-      }
-
-      return strLengs;
-    };
-    const resStrLengs = getStrLengs();
-    console.log(resStrLengs);
-
-    // Получили массив с длиной каждого елемента в основном массиве
-
-    const arrElementsLengs = [];
-
-    const getArrElementLength = (array) => {
-      if (array.length > 0) {
-        arrElementsLengs.push(array[0].length);
-        getArrElementLength(array.slice(1));
-      }
-    };
-    getArrElementLength(VARIANTES_RES);
-    console.log(arrElementsLengs);
-
-    // Самый длинный элемент массива
-
-    const resMaxArrElement =
-    arrElementsLengs.sort((a, b) => b - a).slice(0, 1).join();
-    console.log(resMaxArrElement);
-
-    if (resStrLengs > resMaxArrElement) {
-      alert('Строка слишком большая, повторите попытку');
-      checkInfo();
+      return filterStr;
     }
-    // Перебор массива для создания нового массива
+};
 
-    const resArrSlice = [];
+  const playerStr = getNewStr();
+  console.log(`Вы выбрали: ${playerStr}`);
 
-    const recursArr = (array) => {
-      if (array.length > 0) {
-        resArrSlice.push(array[0].slice(0, resStrLengs));
-        recursArr(array.slice(1));
-      }
-    };
-    recursArr(VARIANTES_RES);
-    console.log(resArrSlice);
+  const minRand = 1;
+  const maxRand = 3;
 
-    // Строка с отобранным результатом
+  function getRandomIntInclusive(min, max) {
+    let resRandom = '';
 
-    let newWord = '';
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    const randNum = Math.floor(Math.random() * (max - min + 1) + min);
 
-    const getWord = (array) => {
-      if (array.length > 0) {
-        if (array[0] === resNewStr && resNewStr[0] === 'К') {
-          newWord = 'Камень';
-        }
-
-        if (array[0] === resNewStr && resNewStr[0] === 'Н') {
-          newWord = 'Ножници';
-        }
-
-        if (array[0] === resNewStr && resNewStr[0] === 'Б') {
-          newWord = 'Бумага';
-        }
-        if (resNewStr === 'Null') {
-          newWord = resNewStr;
-        }
-
-        getWord(array.slice(1));
-      }
-      return newWord;
-    };
-
-    const resSortArr = getWord(resArrSlice);
-    console.log(`resSortArr ${resSortArr}`);
-
-    // Если данные верны, выходим. Если нет, возвращаем функцию...
-
-
-    // let newUserstr = '';
-
-    if (resSortArr === 'Null' || exit === true || resSortArr === 'Камень' || resSortArr === 'Ножници' || resSortArr === 'Бумага') {
-      newUserstr = resSortArr;
-    } else {
-      replayGenerateStr();
+    if (randNum === 1) {
+      resRandom = 'Камень';
     }
 
-    return newUserstr;
+    if (randNum === 2) {
+      resRandom = 'Ножницы';
+    }
+
+    if (randNum === 3) {
+      resRandom = 'Бумага';
+    }
+
+    return resRandom;
   };
-  // Рекурсия конец и результат
 
-  const resReply = replayGenerateStr();
-  console.log(resReply);
+  const randStr = getRandomIntInclusive(minRand, maxRand);
+  console.log(`Компьютер выбрал: ${randStr}`);
 
-  // ------------ Генерация числа ботом -------------
+  const resultGame = function(user, bot) {
+    const check = {
+      player: 0,
+      computer: 0,
+    };
 
-  // const getRandomIntInclusive = () => {
-  //   const min = 1;
-  //   const max = 3;
-  //   const randNum = Math.floor(Math.random() * (max - min + 1) + min);
+    if (user === bot) {
+      console.log('Ничья');
+    }
 
-  //   const getRandomStr = () => {
-  //     let resStrBot = '';
+    if (user === 'Бумага' && bot === 'Ножницы') {
+      console.log(`Бот победил`);
+      check.computer++;
+    }
 
-  //     switch (randNum) {
-  //       case 1:
-  //         resStrBot = 'Камень';
-  //         // console.log(resStr);
-  //         break;
+    if (user === 'Бумага' && bot === 'Камень') {
+      console.log(`Бот проиграл`);
+      check.player++;
+    }
 
-  //       case 2:
-  //         resStrBot = 'Ножницы';
-  //         // console.log(resStr);
-  //         break;
+    if (user === 'Ножницы' && bot === 'Бумага') {
+      console.log(`Бот проиграл`);
+      check.player++;
+    }
 
-  //       case 3:
-  //         resStrBot = 'Бумага';
-  //         // console.log(resStr);
-  //         break;
+    if (user === 'Ножницы' && bot === 'Камень') {
+      console.log(`Бот победил`);
+      check.computer++;
+    }
 
-  //       default:
-  //         console.log('Сбой программы');
-  //     }
-  //     return resStrBot;
-  //   }
+    if (user === 'Камень' && bot === 'Бумага') {
+      console.log(`Бот победил`);
+      check.computer++;
+    }
 
+    if (user === 'Камень' && bot === 'Ножницы') {
+      console.log(`Бот проиграл`);
+      check.player++;
+    }
 
-  // const resRandom = getRandomIntInclusive();
-  // console.log(resRandom);
+    console.log(`игрок: ${check.player}`);
+    console.log(`компьютер: ${check.computer}`);
 
-  // -------------------------------------
+    if (exit) {
+      return;
+    } else {
+      return getNewStr();
+    }
+  };
 
-  // const game = () => {
-  //   const resultGame = {
-  //     player: 0,
-  //     computer: 0,
-  //   };
-
-  //   return function start() {
-  //     checkInfo();
-
-
-  //   };
-  // };
+  // resultGame(randStr, playerStr);
 })();
-
