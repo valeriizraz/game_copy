@@ -123,5 +123,5 @@
     }
   };
 
-  // resultGame(randStr, playerStr);
+  resultGame(randStr, playerStr);
 })();
